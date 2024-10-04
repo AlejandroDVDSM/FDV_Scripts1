@@ -156,12 +156,216 @@ public class Script4 : MonoBehaviour
 
 ## **5. Agregar un cubo en la escena que hará de objetivo, que debe ser movido usando el controlador de los Starter Assets. Sobre la escena que has trabajado ubica un personaje que va a seguir al cubo.**
 
+Se crea un nuevo cubo al cual se le añaden los componentes `CharacterController`, `PlayerInput`, `ThirdPersonController` y `StarterAssetsInputs` para poder manejarlo con las teclas WASD.
+
+![image](https://github.com/user-attachments/assets/9246f104-3017-4e3c-a20c-aefc6ab81b8c)
+
 a. Crear un script que haga que el personaje siga al cubo continuamente sin aplicar simulación física.
 
 b. Agregar un campo público que permita graduar la velocidad del movimiento desde el inspector de objetos.
 
 c. Utilizar la tecla de espaciado para incrementar la velocidad del desplazamiento en el tiempo de juego.
 
+```c#
+using UnityEngine;
+
+public class Script5 : MonoBehaviour
+{
+    public Transform goal;
+
+    public float speed = 1.0f;
+    public float speedIncreaser = .5f;
+    
+    private Vector3 direction;
+
+    void Start()
+    {
+        transform.LookAt(goal);
+    }
+    
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            speed += speedIncreaser;
+            Debug.Log(($"Speed increase to {speed}"));
+        }
+        
+        transform.LookAt(goal);
+        direction = goal.position - transform.position;
+        transform.Translate(direction.normalized * (speed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+
 ![Ejercicio 5](https://github.com/user-attachments/assets/20b1659f-49d1-4f22-98d8-b5cae3be347e)
 
+## **6. Realizar un script que gire al personaje hacia su objetivo para llegar hasta él desplazándose sobre su vector forward local.**
+
+```c#
+using UnityEngine;
+
+public class Script6 : MonoBehaviour
+{
+    public Transform goal;
+    
+    public float speed = 1.0f;
+
+    void Start()
+    {
+        transform.LookAt(goal);
+    }
+    
+    void Update()
+    {
+        transform.LookAt(goal);
+        transform.Translate(Vector3.forward.normalized * (speed * Time.deltaTime));
+    }
+}
+```
+
+![1  Ejercicio 6a](https://github.com/user-attachments/assets/e6fbf219-284f-42fb-9cd6-1acfd9d781a7)
+
+c. Realizar un script que gire al personaje y lo desplace hacia su objetivo en la dirección que lo une con él, respecto al sistema de referencia mundial. Normarlizar la dirección para evitar la influencia de la magnitud del vector.
+
+```
+using UnityEngine;
+
+public class Script6c : MonoBehaviour
+{
+    public Transform goal;
+    
+    public float speed = 1.0f;
+
+    private Vector3 direction;
+    
+    void Start()
+    {
+        transform.LookAt(goal);
+    }
+    
+    void Update()
+    {
+        transform.LookAt(goal);
+
+        direction = goal.position - transform.position;
+        transform.Translate(direction.normalized * (speed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+
+![2  Ejercicio 6c](https://github.com/user-attachments/assets/8db9c0ea-7e91-4a85-9792-cc6b2bc00ab9)
+
+## **7. Cuando ejecutamos el script, el personaje calcula la dirección hacia el objetivo y se mueve hacia él, pero no puede dejar de moverse y se produce jittering. La razón es que todavía estamos dentro del bucle, calculando la dirección y moviéndonos hacia él. En la mayoría de los casos no vamos a conseguir que nuestro personaje se mueva a la posición exacta del objetivo, con lo que continuamente oscila en torno a esa posición. Por eso, debemos tener algún cálculo del tipo de rango de tolerancia. Incluimos una variable global pública, public float accuracy = 0.01f; y una condición if(direction.magnitude > accuracy). Aún con el accuracy, el personaje puede hacer jitter si la velocidad es muy alta.**
+
+a. Controlar el jittering utilizando la magnitud de la dirección.
+
+```c#
+using UnityEngine;
+
+public class Script7a : MonoBehaviour
+{
+    public Transform goal;
+    public float speed = 1.0f;
+    public float accuracy = .01f;
+    
+    private Vector3 direction;
+    
+    void Start()
+    {
+        transform.LookAt(goal);
+    }
+    
+    void Update()
+    {
+        transform.LookAt(goal);
+
+        direction = goal.position - transform.position;
+
+        if (!(direction.magnitude > accuracy)) 
+            return;
+        
+        transform.Translate(direction.normalized * (speed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+
+![1  Ejercicio 7a](https://github.com/user-attachments/assets/29072fdf-4199-4f1d-8bb5-e14e88297816)
+
+b. Controlar el jittering utilizando la distancia entre los dos puntos.
+
+```c#
+using UnityEngine;
+
+public class Script7b : MonoBehaviour
+{
+    public Transform goal;
+    public float speed = 1.0f;
+    public float accuracy = .01f;
+    
+    private Vector3 direction;
+    
+    void Start()
+    {
+        transform.LookAt(goal);
+    }
+    
+    void Update()
+    {
+        transform.LookAt(goal);
+
+        direction = goal.position - transform.position;
+        
+        if (!(Vector3.Distance(transform.position, goal.position) > accuracy)) 
+            return;
+        
+        transform.Translate(direction.normalized * (speed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+_El resultado es el mismo que el gif anterior._
+
+## **8. En esta sesión se trabaja el Movimiento rectilíneo haciendo avanzar al personaje siempre en línea recta hacia adelante introduciendo una mejora. El uso de la función LookAt hace que el personaje gire instantáneamente hacia el objetivo, provocando cambios bruscos. Se aconseja realizar una transición suave a lo largo de diferentes frames. Para ello, en lugar de computar una rotación del ángulo necesario, se realizan sucesivas rotaciones donde el ángulo en cada frame viene dado por los valores intermedios al interpolar la dirección original y la final. Para esto utilizaremos la función Slerp de la clase Quaternion:**
+
+```c#
+using UnityEngine;
+
+public class Script8 : MonoBehaviour
+{
+    public Transform goal;
+    public float movementspeed = 1.0f;
+    public float rotationSpeed = 1.0f;
+    public float accuracy = .01f;
+    
+    private Vector3 direction;
+    private Quaternion goalRotation;
+    
+    void Update()
+    {
+        direction = goal.position - transform.position;
+        goalRotation = Quaternion.LookRotation(direction);
+        
+        transform.rotation = Quaternion.Slerp(transform.rotation, goalRotation, rotationSpeed * Time.deltaTime);
+            
+        if (!(direction.magnitude > accuracy)) 
+            return;
+        
+        transform.Translate(direction.normalized * (movementspeed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+
+![1  Ejercicio 8](https://github.com/user-attachments/assets/0aedfccf-6351-4be0-8ab5-e156b186319d)
+
+## **9. En esta sección se trabaja un sistema básico de Waypoints. Se debe crear un circuito en una escena con la colección de puntos que conforman el circuito. Cada punto del circuito será un objeto 3D al que se le asigne la etiqueta “waypoint”. También se agregará un objeto personaje que será el que recorra los objetivos. Este objeto debe implementar el script con la mecánica de recorrido del circuito. Para ello, debe recuperar la referencia a cada uno de los objetivo y realizar los desplazamientos de un objetivo a otro aplicando el trabajo anterior. En la lógica se debe incluir la gestión de obtener quién es el siguiente objetivo.**
 
