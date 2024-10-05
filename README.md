@@ -1,6 +1,6 @@
 # FDV_Scripts1
 
-## **1. Crear un script que mueva el objeto hacia un punto fijo que se marque como objetivo utilizando el método Translate de la clase Transform. El objetivo debe ser una variable pública, de esta forma conseguimos manipularla en el inspector y ver el efecto de distintos valores en las coordenadas. Utilizar this.transform.Translate(goal) en el start, solo se mueve una vez.**
+## **1. Crear un script que mueva el objeto hacia un punto fijo que se marque como objetivo utilizando el método `Translate` de la clase `Transform`. El objetivo debe ser una variable pública, de esta forma conseguimos manipularla en el inspector y ver el efecto de distintos valores en las coordenadas. Utilizar `this.transform.Translate(goal)` en el start.**
 
 ```c#
 using UnityEngine;
@@ -20,7 +20,7 @@ public class Script1 : MonoBehaviour
 
 ![1  Translate Start](https://github.com/user-attachments/assets/57dff5c1-7e52-4f8f-accc-3db14ea120de)
 
-### _a. Añadir this.transform.Translate(goal); al Update e ir multiplicando goal = goal * 0.5f; en el update para dar saltos más pequeños cada vez._
+### _a. Añadir `this.transform.Translate(goal);` al `Update` e ir multiplicando `goal = goal * 0.5f;` en el update para dar saltos más pequeños cada vez._
 
 ```c#
 using UnityEngine;
@@ -61,7 +61,7 @@ No hace falta modificar el script. Tan solo es necesario asignar un `goal` cuyo 
 
 El movimiento no es consistente dado que a que el cubo avanza a "trompicones", su movimiento no es _smooth_.
 
-## **2. El Objetivo no es un objetivo propiamente dicho, sino una dirección en la que queremos movernos. La información relevante de un vector es la dirección. Los vectores normalizados, conservan la misma dirección pero su escala no afecta al movimiento. Se debe conseguir un movimiento consistente de forma que la escala no afecte a la traslación. Del mismo modo, se debe conseguir que el recorrido realizado por el personaje entre un frame y otro no tenga aberraciones espacio-temporales. Para ello se debe considerar la relación entre la velocidad, el espacio y el tiempo. Por otra parte, el tiempo que transcurre entre un frame y otro se obtiene con: Time.deltaTime.**
+## **2. El Objetivo no es un objetivo propiamente dicho, sino una dirección en la que queremos movernos. La información relevante de un vector es la dirección. Los vectores normalizados, conservan la misma dirección pero su escala no afecta al movimiento. Se debe conseguir un movimiento consistente de forma que la escala no afecte a la traslación. Del mismo modo, se debe conseguir que el recorrido realizado por el personaje entre un frame y otro no tenga aberraciones espacio-temporales. Para ello se debe considerar la relación entre la velocidad, el espacio y el tiempo. Por otra parte, el tiempo que transcurre entre un frame y otro se obtiene con: `Time.deltaTime`.**
 
 ### _a. Sustituir la dirección del movimiento por su equivalente normalizada._
 ### _b. Con el vector normalizado, lo podemos multiplicar por un valor de velocidad para determinar cómo de rápido va el personaje_
@@ -85,10 +85,10 @@ public class Script2 : MonoBehaviour
 
 ![2  Ejercicio 2c](https://github.com/user-attachments/assets/9f2203b8-3b4d-44f9-8466-1430daffd46f)
 
-## **3. En lugar de seguir usando una dirección como objetivo, vamos a movernos ahora hacia una verdadera posición objetivo. Lo agregarermos como un campo público en la clase para poder configurarlo desde le Inspector. También agregaremos un campo para configurar la velocidad del personaje desde el propio Inspector. Aunque queramos desplazarnos hacia un punto en el espacio, el método Translate debe recibir la dirección del movimiento. La dirección que une dos puntos se obtiene restando el más lejano al más cercano. Por último, si el personaje no está encarando el objetivo (podría incluso estar de espaldas a él), el desplazamiento será suave pero la orientación de su malla no será consistente. Por esta razón será necesario rotarlo de forma que su eje z local (forward) apunte hacia el objetivo. La función LookAt del Transform nos ayudará con esto. En este caso, por tanto, para movernos hacia un punto en el espacio que configuramos a una velocidad dada:**
+## **3. En lugar de seguir usando una dirección como objetivo, vamos a movernos ahora hacia una verdadera posición objetivo. Lo agregarermos como un campo público en la clase para poder configurarlo desde le Inspector. También agregaremos un campo para configurar la velocidad del personaje desde el propio Inspector. Aunque queramos desplazarnos hacia un punto en el espacio, el método Translate debe recibir la dirección del movimiento. La dirección que une dos puntos se obtiene restando el más lejano al más cercano. Por último, si el personaje no está encarando el objetivo (podría incluso estar de espaldas a él), el desplazamiento será suave pero la orientación de su malla no será consistente. Por esta razón será necesario rotarlo de forma que su eje z local (forward) apunte hacia el objetivo. La función `LookAt` del `Transform` nos ayudará con esto. En este caso, por tanto, para movernos hacia un punto en el espacio que configuramos a una velocidad dada:**
 
-### _a. Hacemos el objetivo una variable pública `public Transform goal` y añadimos un `public float speed = 1.0f.`_
-### _b. Giramos al personaje para lograr que su movimiento sea hacia delante utilizando `this.transform.LookAt(goal.position)` en el Start para que gire primero y luego se mueva._
+### _a. Hacemos el objetivo una variable pública `public Transform goal` y añadimos un `public float speed = 1.0f;`_
+### _b. Giramos al personaje para lograr que su movimiento sea hacia delante utilizando `this.transform.LookAt(goal.position)` en el `Start` para que gire primero y luego se mueva._
 ### _c. La dirección en la que nos tenemos que mover viene determinada por la diferencia entre la posición del objetivo y nuestra posición:_
  `Vector3 direction = goal.position - this.transform.position;`
  `this.transform.Translate(direction.normalized * speed * Time.deltaTime)`
@@ -256,7 +256,7 @@ public class Script6c : MonoBehaviour
 
 ![2  Ejercicio 6c](https://github.com/user-attachments/assets/8db9c0ea-7e91-4a85-9792-cc6b2bc00ab9)
 
-## **7. Cuando ejecutamos el script, el personaje calcula la dirección hacia el objetivo y se mueve hacia él, pero no puede dejar de moverse y se produce jittering. La razón es que todavía estamos dentro del bucle, calculando la dirección y moviéndonos hacia él. En la mayoría de los casos no vamos a conseguir que nuestro personaje se mueva a la posición exacta del objetivo, con lo que continuamente oscila en torno a esa posición. Por eso, debemos tener algún cálculo del tipo de rango de tolerancia. Incluimos una variable global pública, public float accuracy = 0.01f; y una condición if(direction.magnitude > accuracy). Aún con el accuracy, el personaje puede hacer jitter si la velocidad es muy alta.**
+## **7. Cuando ejecutamos el script, el personaje calcula la dirección hacia el objetivo y se mueve hacia él, pero no puede dejar de moverse y se produce _jittering_. La razón es que todavía estamos dentro del bucle, calculando la dirección y moviéndonos hacia él. En la mayoría de los casos no vamos a conseguir que nuestro personaje se mueva a la posición exacta del objetivo, con lo que continuamente oscila en torno a esa posición. Por eso, debemos tener algún cálculo del tipo de rango de tolerancia. Incluimos una variable global pública, `public float accuracy = 0.01f;` y una condición `if(direction.magnitude > accuracy)`. Aún con el `accuracy`, el personaje puede hacer _jitter_ si la velocidad es muy alta.**
 
 ### _a. Controlar el jittering utilizando la magnitud de la dirección._
 
@@ -330,7 +330,7 @@ public class Script7b : MonoBehaviour
 
 _El resultado es el mismo que el gif anterior._
 
-## **8. En esta sesión se trabaja el Movimiento rectilíneo haciendo avanzar al personaje siempre en línea recta hacia adelante introduciendo una mejora. El uso de la función LookAt hace que el personaje gire instantáneamente hacia el objetivo, provocando cambios bruscos. Se aconseja realizar una transición suave a lo largo de diferentes frames. Para ello, en lugar de computar una rotación del ángulo necesario, se realizan sucesivas rotaciones donde el ángulo en cada frame viene dado por los valores intermedios al interpolar la dirección original y la final. Para esto utilizaremos la función Slerp de la clase Quaternion:**
+## **8. En esta sesión se trabaja el Movimiento rectilíneo haciendo avanzar al personaje siempre en línea recta hacia adelante introduciendo una mejora. El uso de la función `LookAt` hace que el personaje gire instantáneamente hacia el objetivo, provocando cambios bruscos. Se aconseja realizar una transición suave a lo largo de diferentes frames. Para ello, en lugar de computar una rotación del ángulo necesario, se realizan sucesivas rotaciones donde el ángulo en cada frame viene dado por los valores intermedios al interpolar la dirección original y la final. Para esto utilizaremos la función `Slerp` de la clase `Quaternion`.**
 
 ```c#
 using UnityEngine;
@@ -497,3 +497,51 @@ public class Script9 : MonoBehaviour
 
 ## **10. En esta sección se trabaja con el sistema de Waypoints de Unity. Para ello debes importar como asset en el proyecto la carpeta Utility. Configura el circuito, agrega el objetivo que debe perseguir el personaje y añade al personaje que recorrerá el circuito el script WaypointProgressTracker. Finalmente agrega un script al personaje que lo haga perseguir al objetivo. El sistema moverá el objetivo alejándolo del personaje moviéndose de un punto a otro del circuito. El personaje intenta perseguir al objetivo con nuestro script, por tanto, está “obligando” al objetivo a ir de un punto a otro a la par que lo persigue.**
 
+Añadimos el script `WaypointCircuit` al mismo circuito que se creó en el anterior apartado. Luego, con la pestaña _Game_ visualizándose, pulsamos en el botón _"Assign using all child objects"_, lo que hará que todos los GameObjects hijos del circuito sean los waypoints.
+
+![image](https://github.com/user-attachments/assets/2d7e36e6-cbc6-4f5c-8e57-0cb65df06a60)
+
+Ahora, añadimos el script `WaypointProgressTracker` al personaje que recorrerá el circucito. A continuación, desde el inspector asignamos la variable `Circuit` y `Target` del script. `Target` será otro GameObject en la escena que marcará el camino a seguir para nuestro personaje.
+
+![image](https://github.com/user-attachments/assets/7ace9e51-65d1-46fb-ab31-30d7b36f6108)
+
+Finalmente, añadimos un script al personaje que contenga la lógica de traslación para perseguir al objetivo.
+
+```c#
+using System;
+using UnityEngine;
+using UnityStandardAssets.Utility;
+
+public class Script10 : MonoBehaviour
+{
+    public float movementspeed = 1.0f;
+    public float rotationSpeed = 1.0f;
+    public float accuracy = .01f;
+
+    private Transform goal;
+    private Vector3 direction;
+    private Quaternion goalRotation;
+
+    private void Start()
+    {
+        goal = GetComponent<WaypointProgressTracker>().target;
+    }
+
+    void Update()
+    {
+        direction = goal.position - transform.position;
+        goalRotation = Quaternion.LookRotation(direction);
+        
+        transform.rotation = Quaternion.Slerp(transform.rotation, goalRotation, rotationSpeed * Time.deltaTime);
+            
+        if (!(direction.magnitude > accuracy)) 
+            return;
+        
+        transform.Translate(direction.normalized * (movementspeed * Time.deltaTime), Space.World);
+        
+        Debug.DrawRay(transform.position, direction, Color.red);
+    }
+}
+```
+
+![Ejercicio 10](https://github.com/user-attachments/assets/debaa6e5-3b4a-48e6-8dc0-85b2e390ec2e)
