@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// b. Dado que la dirección nos la da la separación entre el objetivo y el personaje, también podemos controlar el
+// jittering utilizando la distancia entre los dos puntos.
 public class Script7b : MonoBehaviour
 {
     public Transform goal;

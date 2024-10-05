@@ -1,5 +1,12 @@
 using UnityEngine;
 
+// 9. En esta sección se trabaja un sistema básico de Waypoints. Se debe crear un circuito en una escena con la colección
+// de puntos que conforman el circuito. Cada punto del circuito será un objeto 3D al que se le asigne la etiqueta
+// “waypoint”. También se agregará un objeto personaje que será el que recorra los objetivos. Este objeto debe implementar
+// el script con la mecánica de recorrido del circuito. Para ello, debe recuperar la referencia a cada uno de los objetivo
+// y realizar los desplazamientos de un objetivo a otro aplicando el trabajo anterior. En la lógica se debe incluir la
+// gestión de obtener quién es el siguiente objetivo.
+
 public class Script9 : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 1.0f;

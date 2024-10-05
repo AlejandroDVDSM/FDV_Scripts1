@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// 4. Añadir Debug.DrawRay(this.transform.position,direction,Color.red) para depuración para comprobar que la dirección
+// está correctamente calculada. 
+
 public class Script4 : MonoBehaviour
 {
     public Transform goal;

@@ -1,5 +1,11 @@
 using UnityEngine;
 
+// b. Realizar un script que gire al personaje y lo desplace hacia su objetivo sobre la dirección que lo une con su
+//    objetivo. Normarlizar la dirección para evitar la influencia de la magnitud del vector.
+// c. Realizar un script que gire al personaje y lo desplace hacia su objetivo en la dirección que lo une con él,
+//    respecto al sistema de referencia mundial. Normarlizar la dirección para evitar la influencia de la magnitud del
+//    vector.
+
 public class Script6c : MonoBehaviour
 {
     public Transform goal;
